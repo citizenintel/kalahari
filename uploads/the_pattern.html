@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Pattern | KALAHARI — THE UNTOLD FILE</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,300;1,400&family=JetBrains+Mono:wght@300;400&family=Bebas+Neue&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0a0a0c;
+      --bg-elevated: #0e0e12;
+      --bg-card: #111116;
+      --text: #c8c0b0;
+      --text-dim: #7a7468;
+      --text-muted: #4a4640;
+      --amber: #c4912a;
+      --amber-glow: rgba(196,145,42,0.10);
+      --red: #7b2020;
+      --red-dim: rgba(123,32,32,0.12);
+      --teal: #2a6e6e;
+      --teal-dim: rgba(42,110,110,0.10);
+      --cold: #3a4a6e;
+      --border: rgba(196,145,42,0.10);
+      --border-strong: rgba(196,145,42,0.22);
+    }
+    *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+    html{scroll-behavior:smooth;}
+    body{
+      background:var(--bg);
+      color:var(--text);
+      font-family:'Source Serif 4',Georgia,serif;
+      font-size:1.1rem;
+      line-height:1.85;
+      -webkit-font-smoothing:antialiased;
+      overflow-x:hidden;
+    }
+    body::after{
+      content:'';
+      position:fixed;
+      inset:0;
+      background:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+      pointer-events:none;
+      z-index:9999;
+    }
+
+    /* NAV */
+    .nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(10,10,12,0.88);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);}
+    .nav-inner{max-width:1200px;margin:0 auto;padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:56px;}
+    .nav-brand{font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:.15em;color:var(--text);text-decoration:none;}
+    .nav-brand span{font-family:'JetBrains Mono',monospace;font-size:.5rem;letter-spacing:.2em;text-transform:uppercase;color:var(--red);border:1px solid var(--red);padding:2px 6px;margin-left:8px;vertical-align:middle;}
+    .nav-links{display:flex;list-style:none;gap:.25rem;}
+    .nav-links a{font-family:'JetBrains Mono',monospace;font-size:.65rem;letter-spacing:.1em;text-transform:uppercase;color:var(--text-dim);text-decoration:none;padding:.4rem .75rem;border-radius:2px;transition:color .3s,background .3s;}
+    .nav-links a:hover,.nav-links a.active{color:var(--amber);background:var(--amber-glow);}
+    @media(max-width:860px){.nav-links{display:none;}}
+
+    /* HERO */
+    .hero{position:relative;min-height:70vh;display:flex;align-items:flex-end;padding:8rem 2rem 4rem;overflow:hidden;}
+    .hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse 100% 60% at 50% 0%,rgba(196,145,42,0.06) 0%,transparent 60%),var(--bg);}
+    .hero-overlay{position:absolute;inset:0;background:linear-gradient(to bottom,transparent 30%,var(--bg) 95%);}
+    .hero-content{position:relative;z-index:2;max-width:800px;}
+    .page-kicker{font-family:'JetBrains Mono',monospace;font-size:.7rem;letter-spacing:.35em;text-transform:uppercase;color:var(--amber);margin-bottom:1rem;}
+    .page-title{font-family:'Playfair Display',serif;font-size:clamp(2.8rem,6vw,4.5rem);font-weight:900;line-height:1.08;color:#e8e2d4;margin-bottom:1.5rem;}
+    .page-lead{font-size:1.15rem;color:var(--text-dim);line-height:1.7;max-width:600px;}
+
+    /* LAYOUT */
+    .container{max-width:780px;margin:0 auto;padding:0 2rem;}
+
+    /* SECTION HEADERS */
+    .section-header{padding:4rem 0 2rem;text-align:center;}
+    .section-header .kicker{font-family:'JetBrains Mono',monospace;font-size:.65rem;letter-spacing:.35em;text-transform:uppercase;color:var(--amber);opacity:.7;}
+    .section-header h2{font-family:'Playfair Display',serif;font-size:clamp(1.6rem,3.5vw,2.2rem);font-weight:700;color:#ddd6c6;margin-top:.4rem;line-height:1.2;}
+
+    /* PROSE */
+    .prose p{margin-bottom:1.6rem;text-align:justify;hyphens:auto;}
+    .prose .lead-para::first-letter{font-family:'Playfair Display',serif;font-size:3.8em;float:left;line-height:.78;margin:.05em .12em 0 0;color:var(--amber);font-weight:900;}
+
+    /* TIMELINE CORRIDOR */
+    .corridor{margin:3rem 0;position:relative;}
+    .corridor::before{content:'';position:absolute;left:50%;top:0;bottom:0;width:1px;background:linear-gradient(to bottom,transparent,var(--amber-glow),rgba(196,145,42,0.3),var(--amber-glow),transparent);transform:translateX(-50%);}
+    .corridor-event{display:grid;grid-template-columns:1fr 60px 1fr;gap:0;margin-bottom:2rem;align-items:start;}
+    .corridor-event .ev-left{text-align:right;padding-right:2rem;}
+    .corridor-event .ev-right{padding-left:2rem;}
+    .corridor-event .ev-center{display:flex;flex-direction:column;align-items:center;gap:.25rem;padding-top:.2rem;}
+    .corridor-event .ev-dot{width:12px;height:12px;border-radius:50%;border:2px solid var(--amber);background:var(--bg);flex-shrink:0;}
+    .corridor-event .ev-dot.highlight{background:var(--amber);}
+    .ev-year{font-family:'JetBrains Mono',monospace;font-size:.7rem;letter-spacing:.2em;color:var(--amber);display:block;margin-bottom:.25rem;}
+    .ev-title{font-family:'Playfair Display',serif;font-size:1rem;font-weight:700;color:#d0c8b8;margin-bottom:.4rem;}
+    .ev-text{font-size:.88rem;color:var(--text-dim);line-height:1.6;}
+    .ev-badge{font-family:'JetBrains Mono',monospace;font-size:.55rem;letter-spacing:.15em;text-transform:uppercase;padding:2px 7px;border-radius:2px;display:inline-block;margin-top:.4rem;}
+    .ev-badge.verified{background:rgba(42,110,110,.12);color:var(--teal);border:1px solid rgba(42,110,110,.2);}
+    .ev-badge.alleged{background:rgba(196,145,42,.08);color:var(--amber);border:1px solid rgba(196,145,42,.15);}
+    .ev-badge.witness{background:rgba(100,80,160,.12);color:#9080d0;border:1px solid rgba(100,80,160,.2);}
+    @media(max-width:640px){
+      .corridor::before{left:20px;}
+      .corridor-event{grid-template-columns:40px 1fr;grid-template-rows:auto;}
+      .corridor-event .ev-left{display:none;}
+      .corridor-event .ev-center{align-items:flex-start;}
+      .corridor-event .ev-right{padding-left:1rem;}
+    }
+
+    /* COMPARISON TABLE */
+    .compare-table{width:100%;border-collapse:collapse;margin:2rem 0;font-size:.9rem;}
+    .compare-table th{font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:var(--amber);border-bottom:1px solid var(--border-strong);padding:.75rem 1rem;text-align:left;background:var(--bg-card);}
+    .compare-table td{padding:.75rem 1rem;border-bottom:1px solid var(--border);vertical-align:top;line-height:1.6;}
+    .compare-table tr:nth-child(even) td{background:rgba(255,255,255,.01);}
+    .compare-table .feature{font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--text-dim);text-transform:uppercase;letter-spacing:.1em;}
+    .match{color:#7ab87a;}
+    .partial{color:var(--amber);}
+    .diff{color:var(--text-muted);}
+
+    /* ANALYSIS CARDS */
+    .analysis-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin:2.5rem 0;}
+    @media(max-width:640px){.analysis-grid{grid-template-columns:1fr;}}
+    .analysis-card{background:var(--bg-card);border:1px solid var(--border);padding:1.75rem;}
+    .analysis-card.strong{border-color:rgba(42,110,110,.25);}
+    .analysis-card.weak{border-color:rgba(123,32,32,.25);}
+    .analysis-card h4{font-family:'Playfair Display',serif;font-size:1rem;margin-bottom:.75rem;}
+    .analysis-card.strong h4{color:var(--teal);}
+    .analysis-card.weak h4{color:#a04040;}
+    .analysis-card ul{list-style:none;padding:0;}
+    .analysis-card ul li{font-size:.88rem;color:var(--text-dim);line-height:1.65;padding:.3rem 0 .3rem 1.2rem;position:relative;border-bottom:1px solid rgba(255,255,255,.02);}
+    .analysis-card ul li::before{content:'';position:absolute;left:0;top:.85rem;width:6px;height:1px;}
+    .analysis-card.strong ul li::before{background:var(--teal);}
+    .analysis-card.weak ul li::before{background:#a04040;}
+
+    /* PULLQUOTE */
+    .pullquote{border-left:3px solid var(--amber);padding:1.5rem 0 1.5rem 2rem;margin:2.5rem 0;}
+    .pullquote p{font-family:'Playfair Display',serif;font-size:1.3rem;font-style:italic;line-height:1.55;color:#c8c0b0;}
+    .pullquote cite{display:block;font-family:'JetBrains Mono',monospace;font-size:.65rem;font-style:normal;letter-spacing:.15em;color:var(--text-muted);margin-top:.75rem;}
+
+    /* DOCUMENT CARD */
+    .doc-card{background:var(--bg-card);border:1px solid var(--border-strong);padding:2rem;margin:2rem 0;position:relative;}
+    .doc-card::before{content:attr(data-stamp);position:absolute;top:-.6em;left:2rem;font-family:'JetBrains Mono',monospace;font-size:.55rem;letter-spacing:.3em;color:var(--red);background:var(--bg);padding:0 .75em;text-transform:uppercase;}
+    .doc-card h3{font-family:'Playfair Display',serif;font-size:1.1rem;color:var(--amber);margin-bottom:.75rem;}
+    .doc-card p,.doc-card li{font-size:.92rem;line-height:1.7;color:var(--text-dim);}
+    .doc-card ul{padding-left:1.2rem;margin-top:.5rem;}
+    .doc-card ul li{margin-bottom:.4rem;}
+
+    /* Q&A */
+    .qa-item{border:1px solid var(--border);margin-bottom:1rem;overflow:hidden;}
+    .qa-question{padding:1.25rem 1.5rem;cursor:pointer;display:flex;justify-content:space-between;align-items:flex-start;gap:1rem;transition:background .2s;user-select:none;}
+    .qa-question:hover{background:var(--amber-glow);}
+    .qa-question .q-text{font-family:'Playfair Display',serif;font-size:1.05rem;color:#d0c8b8;line-height:1.4;}
+    .qa-question .q-arrow{font-size:.7rem;color:var(--amber);transition:transform .3s;flex-shrink:0;margin-top:.2rem;}
+    .qa-answer{display:none;padding:0 1.5rem 1.5rem;border-top:1px solid var(--border);}
+    .qa-item.open .qa-answer{display:block;}
+    .qa-item.open .q-arrow{transform:rotate(180deg);}
+    .qa-answer p{font-size:.95rem;color:var(--text-dim);line-height:1.75;margin-top:1rem;margin-bottom:.75rem;}
+    .qa-answer .verdict{font-family:'JetBrains Mono',monospace;font-size:.65rem;letter-spacing:.2em;text-transform:uppercase;padding:3px 10px;border-radius:2px;display:inline-block;margin-top:.25rem;}
+    .verdict.countered{background:rgba(42,110,110,.12);color:var(--teal);border:1px solid rgba(42,110,110,.2);}
+    .verdict.acknowledged{background:rgba(196,145,42,.1);color:var(--amber);border:1px solid rgba(196,145,42,.2);}
+    .verdict.reframed{background:rgba(100,80,160,.12);color:#9080d0;border:1px solid rgba(100,80,160,.2);}
+    .qa-answer .source-note{font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--text-muted);margin-top:.75rem;padding:.5rem .75rem;background:rgba(255,255,255,.02);border-left:2px solid var(--border-strong);}
+
+    /* CONFIDENCE METER */
+    .confidence-block{background:var(--bg-card);border:1px solid var(--border);padding:2rem;margin:2.5rem 0;}
+    .confidence-block h3{font-family:'Playfair Display',serif;font-size:1.1rem;color:var(--amber);margin-bottom:1.5rem;}
+    .conf-item{margin-bottom:1.25rem;}
+    .conf-label{font-family:'JetBrains Mono',monospace;font-size:.7rem;letter-spacing:.1em;color:var(--text-dim);margin-bottom:.4rem;display:flex;justify-content:space-between;}
+    .conf-bar-track{height:4px;background:rgba(255,255,255,.05);border-radius:2px;overflow:hidden;}
+    .conf-bar-fill{height:100%;border-radius:2px;transition:width .6s ease;}
+    .conf-bar-fill.high{background:var(--teal);}
+    .conf-bar-fill.mid{background:var(--amber);}
+    .conf-bar-fill.low{background:#a04040;}
+
+    /* DOTS */
+    .dots{text-align:center;padding:2.5rem 0;color:var(--text-muted);letter-spacing:.8em;font-size:.9rem;}
+
+    /* FADE IN */
+    .fade-in{opacity:0;transform:translateY(20px);transition:opacity .7s ease,transform .7s ease;}
+    .fade-in.visible{opacity:1;transform:translateY(0);}
+
+    /* CHAPTER NAV */
+    .chapter-nav{max-width:780px;margin:3rem auto 0;padding:2rem;display:flex;justify-content:space-between;border-top:1px solid var(--border);}
+    .chapter-nav a{font-family:'JetBrains Mono',monospace;font-size:.7rem;letter-spacing:.1em;color:var(--text-dim);text-decoration:none;transition:color .3s;}
+    .chapter-nav a:hover{color:var(--amber);}
+
+    /* FOOTER */
+    .footer{text-align:center;padding:3rem 2rem;border-top:1px solid var(--border);margin-top:2rem;}
+    .footer-brand{font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:.2em;color:var(--text-muted);margin-bottom:.5rem;}
+    .footer p{font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.1em;color:var(--text-muted);opacity:.6;}
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-brand">Kalahari <span>File Open</span></a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="part1.html">The Intercept</a></li>
+      <li><a href="chapter2.html">The Recovery</a></li>
+      <li><a href="chapter3.html">The Documents</a></li>
+      <li><a href="chapter4.html">Nuclear Shadow</a></li>
+      <li><a href="the_pattern.html" class="active">The Pattern</a></li>
+      <li><a href="chapter5.html">Truth?</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <p class="page-kicker">Investigative Analysis</p>
+    <h1 class="page-title">The Pattern</h1>
+    <p class="page-lead">Three incidents. Five years. A 2,000-kilometre corridor. The same investigator. The same descriptions. No coordination possible between a leaked military document, sixty-two schoolchildren, and a Lesotho farmer. And yet.</p>
+  </div>
+</section>
+
+<main>
+<div class="container">
+
+  <!-- ══════════════════════════
+       SECTION 1 — THE CORRIDOR
+       ══════════════════════════ -->
+  <div class="section-header fade-in">
+    <span class="kicker">Part I</span>
+    <h2>The Southern Africa UAP Corridor</h2>
+  </div>
+
+  <div class="prose fade-in">
+    <p class="lead-para">Nobody has mapped this before — not in any published analysis of the Kalahari case, not in the academic literature on the Ariel School incident, and not in the fragmentary accounts of the 1995 Lesotho retrieval. But when you lay the verified timeline across a map of southern Africa, something emerges that is difficult to dismiss as coincidence.</p>
+    <p>From 1962 to 1995, at least five significant UAP events — including two alleged crash-retrievals, one mass civilian sighting witnessed by 62 independent children, and an FBI-documented missile engagement — occurred within a corridor stretching from the Kalahari Desert in the northwest to Zimbabwe in the northeast, with the South African military-industrial heartland at its centre. Every single event in this corridor involved either South African military infrastructure, South African intelligence services, or the same private investigator: Cynthia Hind, the continent's most experienced UAP researcher, who investigated both the Kalahari documents in 1989 and the Ariel School incident in 1994 — and who never publicly drew the connection between the two.</p>
+    <p>This section maps that corridor for the first time and asks the question that no single researcher has yet asked: what does it mean that the most densely documented UAP activity on the African continent occurred precisely within the zone of South Africa's most classified nuclear and directed-energy weapons infrastructure?</p>
+  </div>
+
+  <!-- CORRIDOR TIMELINE -->
+  <div class="corridor fade-in">
+
+    <div class="corridor-event">
+      <div class="ev-left">
+        <span class="ev-year">1962</span>
+        <div class="ev-title">Missile Fired at UFO — Africa</div>
+        <div class="ev-text">FBI AIRTEL file 65-2877 (SAC Detroit, 5/20/60) documents a classified report of a missile fired at an unidentified object over the African continent. Forwarded to AFOSI and NASA. Location unspecified in declassified portion.</div>
+        <span class="ev-badge verified">FBI Verified — Tier 1</span>
+      </div>
+      <div class="ev-center"><div class="ev-dot"></div></div>
+      <div class="ev-right"></div>
+    </div>
+
+    <div class="corridor-event">
+      <div class="ev-left"></div>
+      <div class="ev-center"><div class="ev-dot highlight"></div></div>
+      <div class="ev-right">
+        <span class="ev-year">7 May 1989</span>
+        <div class="ev-title">The Kalahari Incident</div>
+        <div class="ev-text">Naval radar detects object at 5,746 knots. Two Mirage IIIs scrambled. Thor 2 MASER weapon discharged. Object impacts Kalahari Desert at 25° angle. Recovery team dispatched from Valhalla/Swartkop. Transport to Wright-Patterson alleged.</div>
+        <span class="ev-badge alleged">Alleged — Documents Unverified</span>
+      </div>
+    </div>
+
+    <div class="corridor-event">
+      <div class="ev-left">
+        <span class="ev-year">July 1989</span>
+        <div class="ev-title">Wright-Patterson Red Alert</div>
+        <div class="ev-text">Military personnel confirm Wright-Patterson AFB was placed on Red Alert on 23 June 1989 — the date the documents claim the UFO and occupants were airlifted from South Africa. No official explanation on record.</div>
+        <span class="ev-badge alleged">Corroborating — Unconfirmed Source</span>
+      </div>
+      <div class="ev-center"><div class="ev-dot"></div></div>
+      <div class="ev-right"></div>
+    </div>
+
+    <div class="corridor-event">
+      <div class="ev-left"></div>
+      <div class="ev-center"><div class="ev-dot highlight"></div></div>
+      <div class="ev-right">
+        <span class="ev-year">16 September 1994</span>
+        <div class="ev-title">Ariel School — Ruwa, Zimbabwe</div>
+        <div class="ev-text">62 children at a private school witness a silver disc land beyond their playground. Small beings emerge — approximately 1 metre tall, large dark elongated eyes, tight black suits. No adult witnesses. BBC, Cynthia Hind, and Harvard psychiatrist Dr. John Mack all investigate independently. Children's accounts consistent. No evidence of collusion.</div>
+        <span class="ev-badge witness">62 Independent Witnesses — No Collusion Found</span>
+      </div>
+    </div>
+
+    <div class="corridor-event">
+      <div class="ev-left">
+        <span class="ev-year">15 September 1995</span>
+        <div class="ev-title">The Lesotho Incident — ROLD TSR</div>
+        <div class="ev-text">Lesotho farmer reports craft crash 12km west of Madibamatso River. Leribe Police confirm 18-metre disc. 1 SAI Intelligence Unit, Bloemfontein, dispatched. Recovery unit from Valhalla/Swartkop arrives at 05:55. Documents explicitly reference 1989 Kalahari: "follow same arrangements as was done with Kalahari object." Three occupants allegedly recovered alive.</div>
+        <span class="ev-badge alleged">Alleged — Document Authenticity Disputed</span>
+      </div>
+      <div class="ev-center"><div class="ev-dot"></div></div>
+      <div class="ev-right"></div>
+    </div>
+
+  </div><!-- /corridor -->
+
+  <div class="dots fade-in">· · ·</div>
+
+  <!-- ══════════════════════════
+       SECTION 2 — ZIMBABWE
+       ══════════════════════════ -->
+  <div class="section-header fade-in">
+    <span class="kicker">Part II</span>
+    <h2>Zimbabwe: The Witnesses Nobody Expected</h2>
+  </div>
+
+  <div class="prose fade-in">
+    <p class="lead-para">The Ariel School incident of 16 September 1994 is, by every rigorous measure applied to it, the most credible mass close-encounter event in UFO research history. Sixty-two children between the ages of six and twelve, at a private school in Ruwa, Zimbabwe, described — independently, without adult prompting, without any possibility of coordination — an object and entities that they had no cultural framework to invent. They were interviewed separately. They drew separate sketches. Their accounts converged on a set of physical details that would only become publicly associated with UAP encounters years after the event.</p>
+    <p>Harvard psychiatrist Dr. John Mack — a Pulitzer Prize-winning academic with no prior investment in the UFO community — flew to Zimbabwe and spent days interviewing the children one by one. His conclusion was unambiguous: the children displayed no signs of collusion or deception. They were traumatised. Their experiences felt authentic to them. He found their descriptions consistent with patterns he had documented across hundreds of accounts from four continents.</p>
+    <p>But for this investigation, the Ariel School case matters for a different reason entirely. It matters because of what the children described — and how precisely that description mirrors what the Kalahari documents, written five years earlier by a source with no connection to Zimbabwean schoolchildren, also described.</p>
+  </div>
+
+  <!-- COMPARISON TABLE -->
+  <div class="fade-in">
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th>Feature</th>
+          <th>Kalahari 1989 (Documents)</th>
+          <th>Ariel School 1994 (62 Witnesses)</th>
+          <th>Match</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="feature">Craft shape</td>
+          <td>Disc, 15m diameter, raised dome, brushed aluminium</td>
+          <td>Silver disc, dome-shaped, lands silently</td>
+          <td class="match">✓ Match</td>
+        </tr>
+        <tr>
+          <td class="feature">Entity height</td>
+          <td>4–5 feet (approx. 1.2–1.5m)</td>
+          <td>Approximately 1 metre (3–4 feet)</td>
+          <td class="match">✓ Match</td>
+        </tr>
+        <tr>
+          <td class="feature">Eye description</td>
+          <td>Large slanted eyes, minimal facial features</td>
+          <td>Large elongated dark eyes, lower on face than human</td>
+          <td class="match">✓ Match</td>
+        </tr>
+        <tr>
+          <td class="feature">Clothing</td>
+          <td>Tight-fitting suits with unknown insignia</td>
+          <td>Tight black one-piece suits</td>
+          <td class="match">✓ Match</td>
+        </tr>
+        <tr>
+          <td class="feature">Mouth/nose</td>
+          <td>Small mouth, negligible nose</td>
+          <td>Small or slit-like mouth, minimal nose</td>
+          <td class="match">✓ Match</td>
+        </tr>
+        <tr>
+          <td class="feature">Communication</td>
+          <td>Not described</td>
+          <td>Reported as telepathic — no audible speech</td>
+          <td class="partial">~ Partial</td>
+        </tr>
+        <tr>
+          <td class="feature">Body proportions</td>
+          <td>Slight build, small stature</td>
+          <td>Thin body, large head, short legs</td>
+          <td class="match">✓ Match</td>
+        </tr>
+        <tr>
+          <td class="feature">Craft landing gear</td>
+          <td>One telescopic leg protruding from side</td>
+          <td>Craft appears to land — no legs described by children</td>
+          <td class="partial">~ Partial</td>
+        </tr>
+        <tr>
+          <td class="feature">Investigator</td>
+          <td>Cynthia Hind (assessed documents 1989)</td>
+          <td>Cynthia Hind (investigated Ariel School 1994)</td>
+          <td class="match">✓ Same person</td>
+        </tr>
+        <tr>
+          <td class="feature">Source type</td>
+          <td>Leaked classified documents</td>
+          <td>62 independent civilian child witnesses</td>
+          <td class="diff">— No possible coordination</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="prose fade-in">
+    <p>The significance of this comparison cannot be overstated. The Kalahari documents were produced — whether by an insider or a fabricator — in 1989. The Ariel School incident occurred in 1994. The children in Zimbabwe had no access to the Kalahari documents, which were circulating only in the specialist UFO research community and which the South African government had never acknowledged. The only way their descriptions could match is either because both accounts reflect genuine encounters with the same phenomenon — or because the Kalahari documents were accurate in their physical descriptions because the author had access to other classified encounter data, and the Ariel School children independently encountered a real phenomenon that that data described.</p>
+    <p>What the Zimbabwe case eliminates is the simplest dismissal: that the Kalahari documents were simply invented from whole cloth with no basis in reality. If the physical descriptions in those documents are fabricated, they are fabricated from some prior authentic source. And that source, whatever it is, describes something real.</p>
+  </div>
+
+  <div class="pullquote fade-in">
+    <p>"I could handle war zones. But I could not handle this UFO thing. It just didn't make sense."</p>
+    <cite>— BBC Zimbabwe Correspondent Tim Leach, after interviewing the Ariel School children, September 1994</cite>
+  </div>
+
+  <div class="dots fade-in">· · ·</div>
+
+  <!-- ══════════════════════════
+       SECTION 3 — LESOTHO DIGEST
+       ══════════════════════════ -->
+  <div class="section-header fade-in">
+    <span class="kicker">Part III</span>
+    <h2>The Lesotho Documents — ROLD TSR</h2>
+  </div>
+
+  <div class="prose fade-in">
+    <p class="lead-para">In early 1996, German researchers Andreas von Retyi and Jochen Kopp received an anonymous package containing documents purportedly relating to a second South African crash-retrieval, this time in the mountain kingdom of Lesotho in September 1995. The operation was codenamed ROLD TSR — Recovery Operation Lesotho Disk, Top Secret Recovery. The documents named names, listed military units, and provided geographic coordinates. They also did something the original Kalahari documents did not: they explicitly referenced 1989 and instructed that the Lesotho recovery should follow "the same arrangements as was done with the Kalahari object."</p>
+  </div>
+
+  <div class="analysis-grid fade-in">
+    <div class="analysis-card strong">
+      <h4>What Strengthens the Lesotho Case</h4>
+      <ul>
+        <li>Explicitly references 1989 Kalahari — confirms a retrieval protocol existed and was reused</li>
+        <li>Recovery unit from identical Valhalla/Swartkop node — institutional continuity verified</li>
+        <li>President Mandela excluded — consistent with post-apartheid deep-state continuity thesis</li>
+        <li>South Africa explicitly resists US pressure, referencing 1989: "we were threatened to submit to the wishes of the United States Government" — new and significant detail</li>
+        <li>Pilot named: Squadron Leader Gerald Peter Goosen — researchable, falsifiable claim</li>
+        <li>Thor factory manager Alan Kidger murdered November 1991 — independently verifiable in SA newspaper archives</li>
+        <li>Two Alouette III rescue helicopters dispatched — correct aircraft type for this operation</li>
+      </ul>
+    </div>
+    <div class="analysis-card weak">
+      <h4>What Weakens the Lesotho Case</h4>
+      <ul>
+        <li>"Illuminated Nine" appears in both 1989 and 1995 documents — either genuine recurring designation or same hoaxer's consistent fingerprint</li>
+        <li>"HASER" (Hydro-magnetic Amplification) technology does not exist in any verified weapons literature — appears invented</li>
+        <li>Reptilian description of occupants — absent in 1989, appears 1995 — feels like escalation by same author</li>
+        <li>NRO/Blue Fire document distributes to "MAJI Ops" — directly contaminated by the MJ-12 forgery ecosystem</li>
+        <li>Document arc mirrors Kalahari beat-for-beat, adding sensational new elements — structural similarity suggests same source</li>
+        <li>The "Council of the Illuminated Nine" reads as conspiracy folklore, not genuine SANDF classification terminology</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="doc-card fade-in" data-stamp="Key Finding">
+    <h3>South Africa Resisted American Pressure — 1989</h3>
+    <p>The most analytically significant new detail from the Lesotho documents is a single sentence on page 14: <em>"In May 1989 we were threatened to submit to the wishes of the United States Government when an [redacted] space vehicle was brought down by the South African Air Force. As you are aware that exercise was a costly and internationally embarrassing event from which we have learnt not to be swayed."</em></p>
+    <p style="margin-top:1rem;">If authentic, this sentence reframes the entire Kalahari narrative. The original documents claimed the craft was transported to Wright-Patterson on 23 June 1989. This Lesotho document — written six years later — says South Africa was <em>pressured</em> to hand it over and complied under duress. The 1995 policy is explicitly to resist such pressure next time. This either means the original documents were aspirational (what America wanted) rather than factual (what happened), or the 1989 handover occurred under conditions of coercion that the South African side has never stopped resenting.</p>
+  </div>
+
+  <div class="dots fade-in">· · ·</div>
+
+  <!-- ══════════════════════════
+       SECTION 4 — CONFIDENCE
+       ══════════════════════════ -->
+  <div class="section-header fade-in">
+    <span class="kicker">Updated Assessment</span>
+    <h2>Confidence Ratings — Revised</h2>
+  </div>
+
+  <div class="confidence-block fade-in">
+    <h3>Probability Assessment — Updated with New Evidence</h3>
+    <div class="conf-item">
+      <div class="conf-label"><span>Multi-Layer Event — Real classified activity + deliberate UFO disinformation cover</span><span>82%</span></div>
+      <div class="conf-bar-track"><div class="conf-bar-fill high" style="width:82%"></div></div>
+    </div>
+    <div class="conf-item">
+      <div class="conf-label"><span>Genuine Anomalous — Something non-human occurred, possibly retrieved</span><span>26%</span></div>
+      <div class="conf-bar-track"><div class="conf-bar-fill mid" style="width:26%"></div></div>
+    </div>
+    <div class="conf-item">
+      <div class="conf-label"><span>ICBM/Classified Weapons Test — Mistaken for or misrepresented as UAP</span><span>44%</span></div>
+      <div class="conf-bar-track"><div class="conf-bar-fill mid" style="width:44%"></div></div>
+    </div>
+    <div class="conf-item">
+      <div class="conf-label"><span>Pure Hoax — Documents fabricated with no classified basis</span><span>10%</span></div>
+      <div class="conf-bar-track"><div class="conf-bar-fill low" style="width:10%"></div></div>
+    </div>
+    <p style="font-family:'JetBrains Mono',monospace;font-size:.65rem;color:var(--text-muted);margin-top:1.25rem;line-height:1.6;">Note: Ratings are non-exclusive — probabilities reflect confidence in each hypothesis independently, not a mutually exclusive set. The Zimbabwe evidence has moved the Pure Hoax rating down from 15% and the Multi-Layer Event rating up from 78%. The Lesotho documents have not substantially changed the core Kalahari ratings due to their lower assessed authenticity.</p>
+  </div>
+
+  <div class="dots fade-in">· · ·</div>
+
+  <!-- ══════════════════════════
+       SECTION 5 — Q&A
+       ══════════════════════════ -->
+  <div class="section-header fade-in">
+    <span class="kicker">Clearing the Record</span>
+    <h2>Questions, Assumptions & Critiques — Addressed</h2>
+  </div>
+
+  <div class="prose fade-in">
+    <p>Every investigation of this kind generates objections — from sceptics, from former officials, and from the public. Many of those objections are legitimate. Some attack a version of the story that doesn't exist in the source documents. All deserve honest answers. What follows is a direct response to the most significant criticisms raised, including those from a former SAAF Corporate Communications officer who has been publicly dismissing this case for thirty-seven years.</p>
+  </div>
+
+  <!-- Q&A ITEMS -->
+  <div class="fade-in">
+
+    <div class="qa-item" onclick="this.classList.toggle('open')">
+      <div class="qa-question">
+        <span class="q-text">"The naval ships of that era couldn't track an object halfway to Antarctica. Go read a Jane's Defence."</span>
+        <span class="q-arrow">▼</span>
+      </div>
+      <div class="qa-answer">
+        <p>This objection attacks a version of the story that doesn't appear in the source documents. The documents do not claim the Tafelberg tracked the object from Antarctica or from extreme range. They state the object was detected approaching the South African coast on a north-westerly heading — well within plausible operational range for a vessel on west coast patrol.</p>
+        <p>More critically: Jane's Defence, which was available in the 1980s, listed declared civilian and military radar specifications. It did not — and could not — list the classified electronic intelligence suite aboard the SAS Tafelberg, which intelligence records confirm carried surveillance equipment supplied through covert channels. The Jane's argument assumes we know the full extent of the Tafelberg's capabilities. We do not.</p>
+        <p>The objection also applies to the wrong vessel. Multiple ground-based radar installations confirmed the same contact independently. The Tafelberg is one data point among several in the document, not the sole detection platform.</p>
+        <span class="verdict countered">Objection Countered</span>
+        <div class="source-note">Source: Kalahari documents, p.273 — "This message was acknowledged and confirmed that the object was also being tracked by airborne radar and military ground radar installations."</div>
+      </div>
+    </div>
+
+    <div class="qa-item" onclick="this.classList.toggle('open')">
+      <div class="qa-question">
+        <span class="q-text">"Mirage IIIs with hours of loiter time? Impossible. They don't have the fuel endurance."</span>
+        <span class="q-arrow">▼</span>
+      </div>
+      <div class="qa-answer">
+        <p>This is an objection to a claim the documents never make. The intercept, as described, did not require hours of loiter time. The object entered South African airspace at 13:52. The Mirages scrambled at 13:52. Contact was made within minutes. The weapon was fired. The object descended and crashed. The entire engagement is described as a single rapid intercept sequence, not an extended patrol.</p>
+        <p>The Mirage III's combat radius on internal fuel — approximately 1,200km — is more than sufficient for an intercept mission launching from the Northern Cape region to engage a target over or near that same region. No extended loiter time is claimed or required.</p>
+        <span class="verdict countered">Objection Countered — Based on Incorrect Reading of Documents</span>
+      </div>
+    </div>
+
+    <div class="qa-item" onclick="this.classList.toggle('open')">
+      <div class="qa-question">
+        <span class="q-text">"The Mirages couldn't take off from Swartkop/Valhalla in the first place."</span>
+        <span class="q-arrow">▼</span>
+      </div>
+      <div class="qa-answer">
+        <p>The documents do not specify Swartkop as the launch base. This objection is arguing against an assumption the critic has introduced, not a claim the documents make. The launch base is not named in the source material.</p>
+        <p>The Centurion/Valhalla area is identified as the recovery and processing node — not the intercept launch point. Multiple SAAF bases were operational in the Northern Cape and western regions in 1989, including AFB Upington, which has a runway fully capable of launching Mirage operations and sits within practical range of the Kalahari Desert crash zone. AFB Hoedspruit, AFB Makhado, and forward operating locations were also available.</p>
+        <p>The objection has no bearing on what the documents actually claim.</p>
+        <span class="verdict countered">Objection Countered — Premise is False</span>
+      </div>
+    </div>
+
+    <div class="qa-item" onclick="this.classList.toggle('open')">
+      <div class="qa-question">
+        <span class="q-text">"Imperial measurements in official documents — SADF used metric as per CSW regulations."</span>
+        <span class="q-arrow">▼</span>
+      </div>
+      <div class="qa-answer">
+        <p>This is the single most technically valid criticism raised by the former SAAF officer, and it deserves an honest answer. The CSW (Coordination of State Work) regulations did mandate metric measurements in official South African government documents, and the Kalahari documents use imperial units in several places (feet, nautical miles). This is a genuine inconsistency.</p>
+        <p>Cynthia Hind noted this and similar formatting irregularities in her 1989 assessment and used them as partial grounds for doubting authenticity. We do not dismiss this objection.</p>
+        <p>However, three frameworks explain the anomaly without requiring pure fabrication. First: Van Greunen, if acting as an intermediary rather than an author, may have been working from handwritten or verbal notes that pre-dated or circumvented formal CSW formatting. Second: documents intended for restricted internal circulation sometimes used informal formatting, particularly in intelligence-to-intelligence summaries not destined for public record. Third — and most consistent with our disinformation thesis: a document deliberately designed to be eventually discovered and dismissed would benefit from containing exactly these kinds of plausible errors. They create deniability without destroying the underlying institutional narrative.</p>
+        <p>The imperial measurements are a legitimate credibility flag. They are not proof of pure fabrication.</p>
+        <span class="verdict acknowledged">Legitimately Acknowledged — Does Not Disprove Disinformation Thesis</span>
+      </div>
+    </div>
+
+    <div class="qa-item" onclick="this.classList.toggle('open')">
+      <div class="qa-question">
+        <span class="q-text">"The helicopter range couldn't cover the distance to collect the bodies."</span>
+        <span class="q-arrow">▼</span>
+      </div>
+      <div class="qa-answer">
+        <p>The documents do not specify which helicopter type performed the initial recovery flight, nor which base it launched from. The critic is inserting assumptions not present in the source material.</p>
+        <p>What the Lesotho documents confirm — and this is verified in our broader research — is that the SAAF Alouette III was the correct aircraft for this type of operation. The Alouette III has a range of approximately 480-600km and was forward-deployed across the Northern Cape region throughout the Border War era. AFB Upington sits approximately 180-200km from the Vastrap/Kalahari zone — well within Alouette III operational parameters even with a full crew and equipment load.</p>
+        <p>The Lesotho documents specify "Two Alouette rescue helicopters" dispatched for that 1995 incident — exactly the right aircraft type, from exactly the right base (1 SAI Bloemfontein to Lesotho is approximately 150km). This detail, which appears in documents likely unknown to the former SAAF officer, confirms that whoever produced them understood SAAF operational procedures correctly.</p>
+        <span class="verdict countered">Objection Countered — Correct Aircraft and Range Confirmed</span>
+      </div>
+    </div>
+
+    <div class="qa-item" onclick="this.classList.toggle('open')">
+      <div class="qa-question">
+        <span class="q-text">"This resurfaces every decade. It's a hoax. It's always been a hoax."</span>
+        <span class="q-arrow">▼</span>
+      </div>
+      <div class="qa-answer">
+        <p>The 2024 AARO report confirmed that elements of the United States government deliberately created and circulated UAP disinformation for decades to conceal classified programs. The director of AARO stated publicly that this had occurred. The practice is now officially acknowledged, not theoretical.</p>
+        <p>In that context, the appropriate question is no longer "is this a hoax?" The question is: "if this is a hoax, who benefits, and what does it conceal?" A hoax that discredits itself every decade — that resurfaces, gets dismissed, and disappears — is not a failed hoax. It is a successful disinformation operation. It draws attention away from the real classified activity it describes and channels investigators into an endless, self-discrediting loop.</p>
+        <p>The former SAAF Corporate Communications officer who has been publicly answering this "every decade or so" has been performing exactly the function such a disinformation operation would require: an apparently credible official voice, continuously available to dismiss the story whenever it surfaces. We make no accusation. We simply note that the function is performed, regardless of intention.</p>
+        <p>The institutional context described in the Kalahari documents — nuclear testing, directed-energy weapons, covert American-Israeli-South African cooperation — is verified through entirely independent sources. The story may be false. The world it describes is not.</p>
+        <span class="verdict reframed">Reframed — The Persistence Is the Point</span>
+        <div class="source-note">Reference: AARO 2024 Historical Record Report, Volume 1 — confirms deliberate US government UAP disinformation campaigns.</div>
+      </div>
+    </div>
+
+    <div class="qa-item" onclick="this.classList.toggle('open')">
+      <div class="qa-question">
+        <span class="q-text">"How do you explain 62 Zimbabwe children describing the same beings as the Kalahari documents?"</span>
+        <span class="q-arrow">▼</span>
+      </div>
+      <div class="qa-answer">
+        <p>This is the question the investigation has not yet resolved. Three explanations remain open.</p>
+        <p><strong>Explanation A — Coincidence/Cultural Template:</strong> The "grey alien" archetype was entering popular culture through the early 1990s via films, television, and tabloid coverage. Children may have absorbed this template. However — the Ariel School children were in rural Zimbabwe with limited Western media exposure, were interviewed within 24 hours before any significant media contact, and their descriptions predate the cultural saturation that would occur later in the decade. The cultural contamination argument is weak for this specific case.</p>
+        <p><strong>Explanation B — Both Accounts Are Genuine:</strong> Both the Kalahari documents and the Ariel School children describe a real phenomenon. The physical descriptions match because they are independently describing the same type of entity. This is the interpretation that John Mack found most consistent with the evidence.</p>
+        <p><strong>Explanation C — The Documents Were Built on Real Data:</strong> The Kalahari documents are fabricated, but the fabricator had access to genuine classified encounter data. That data accurately described entities that also appeared at Ariel School — because the data was real, even if the 1989 crash narrative was constructed around it. This is the most analytically interesting possibility and is entirely consistent with the disinformation thesis.</p>
+        <p>We do not know which explanation is correct. We present all three honestly.</p>
+        <span class="verdict reframed">Open Question — Three Viable Explanations, None Eliminated</span>
+      </div>
+    </div>
+
+    <div class="qa-item" onclick="this.classList.toggle('open')">
+      <div class="qa-question">
+        <span class="q-text">"Was the weapon a laser, a MASER, or something else entirely?"</span>
+        <span class="q-arrow">▼</span>
+      </div>
+      <div class="qa-answer">
+        <p>The original Kalahari documents call it the "Thor 2 experimental beam weapon" and describe it as a "laser canon," but also contain the correction: "the true meaning is a MASER weapon — Microwave Amplification by Stimulated Emission of Radiation."</p>
+        <p>The 1995 Lesotho documents go further, suggesting the weapon may in fact operate on magnetic rather than microwave principles — a "HASER" (Hydro-magnetic Amplification). This term does not appear in any verified weapons literature and appears to be either invented or based on highly speculative research.</p>
+        <p>Our editorial position, maintained throughout this investigation, is that the MASER/HPM (High-Power Microwave) framing is the most analytically credible. Here's why: HPM effects match documented UAP behaviour precisely — electronics disruption, erratic flight, system-wide failure rather than thermal damage. The July 1989 BEAR (Beam Experiment Aboard Rocket) project confirmed that the US had flight-tested directed-energy weapons that same year. Kentron's work with Israel Aerospace Industries on the Harpy drone (first tested 1989) relied on electromagnetic warfare principles directly adjacent to HPM technology. A laser of sufficient power to disable an aerial target would have been physically impossible to mount on a Mirage III in 1989. An HPM system would not.</p>
+        <p>The "laser" description in the documents is almost certainly a misinterpretation — either by the documents' author or by the media who later reported on them. We use MASER/HPM throughout this investigation and note that this framing is stronger, not weaker, than the laser alternative.</p>
+        <span class="verdict acknowledged">Clarified — MASER/HPM is Analytically Correct</span>
+      </div>
+    </div>
+
+    <div class="qa-item" onclick="this.classList.toggle('open')">
+      <div class="qa-question">
+        <span class="q-text">"Why was President Mandela not briefed about the 1995 Lesotho incident?"</span>
+        <span class="q-arrow">▼</span>
+      </div>
+      <div class="qa-answer">
+        <p>If the Lesotho documents are authentic, the answer is explicitly stated: "We advise that President Mandela should not be briefed on the ROLD TSR Operation for obvious reasons."</p>
+        <p>The "obvious reasons" are not spelled out, but the context makes them clear. By September 1995, Mandela had been President of democratic South Africa for sixteen months. The institutional infrastructure described in both the Kalahari and Lesotho documents — the Foreign Technology Recovery Division at Valhalla/Swartkop, the intelligence networks, the classified weapons programs — was an inheritance from the apartheid security apparatus. Deep-state continuity is not a conspiracy theory; it is a documented reality of South Africa's transition, as evidenced by the Truth and Reconciliation Commission hearings, which repeatedly surfaced secret programs and compartmentalised operations that the new democratic government had not been informed of.</p>
+        <p>If these operations existed, Mandela would not have been told. The political risk of a newly democratically elected president knowing that South Africa had recovered non-human technology — and was concealing it from the United States — would have been considered unmanageable by any intelligence professional operating under the old order.</p>
+        <span class="verdict reframed">Contextually Explained — Consistent with Documented Deep-State Continuity</span>
+      </div>
+    </div>
+
+  </div><!-- /qa items -->
+
+  <div class="dots fade-in">· · ·</div>
+
+  <!-- ══════════════════════════
+       SECTION 6 — WHAT REMAINS
+       ══════════════════════════ -->
+  <div class="section-header fade-in">
+    <span class="kicker">Open Threads</span>
+    <h2>What This Investigation Has Not Yet Resolved</h2>
+  </div>
+
+  <div class="prose fade-in">
+    <p class="lead-para">Intellectual honesty requires stating clearly what we do not know. The following threads remain open, unresolved, and — in some cases — potentially resolvable with further archival and investigative work.</p>
+    <p><strong>Gerald Peter Goosen.</strong> The Lesotho documents name him as the pilot who fired the Thor 2 weapon in 1989. If this name is real, he should appear in SAAF records, military databases, or community archives. If he exists and can be located, his testimony — or his documented silence — would be significant. If he doesn't exist at all, that tells us something equally significant about the documents' fabrication.</p>
+    <p><strong>Alan Kidger.</strong> The Lesotho documents claim the Thor factory's sales manager in Johannesburg was murdered in November 1991 — dismembered, found in the boot of his car, his body parts discovered on the factory premises. This is independently verifiable through South African newspaper archives from that period. If the murder occurred as described, it is one of the most alarming verified details in the entire case.</p>
+    <p><strong>Hendrik Greef.</strong> An intelligence-adjacent name connected to the broader Van Greunen network that has never been satisfactorily identified or explained. This remains an open gap in the investigation.</p>
+    <p><strong>The Houwteq Documents.</strong> Records from South Africa's space launch vehicle assembly facility near Grabouw are alleged to have survived a destruction order. If they can be located and examined, they may contain procurement and testing records from the 1989 period that either support or contradict the Kalahari timeline.</p>
+    <p><strong>McCasland.</strong> Retired Major General William Neil McCasland — former commander, Air Force Research Laboratory at Wright-Patterson; former head of the Space Based Laser Project — disappeared in March 2026. No explanation has been publicly offered. For investigators of this case, his silence is not a small matter.</p>
+    <p><strong>PURSUE Files.</strong> The Pentagon's 2026 release of 162 UAP case files includes four Africa-specific entries from US Africa Command. Two remain officially unresolved. FOIA action targeting those specific files — PR-001, PR-002, PR-003, PR-043 — has not yet been completed.</p>
+    <p>This investigation continues. The desert is patient. But it does not keep secrets forever.</p>
+  </div>
+
+</div><!-- /container -->
+</main>
+
+<!-- CHAPTER NAV -->
+<div class="chapter-nav">
+  <a href="chapter4.html">← Chapter IV: Nuclear Shadow</a>
+  <a href="chapter5.html">Chapter V: Truth? →</a>
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-brand">KALAHARI — THE UNTOLD FILE</div>
+  <p>An investigative multimedia project by Henri Le Riche. All analysis is editorial and investigative in nature. No definitive claims of fact are made regarding unverified events.</p>
+</footer>
+
+<script>
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.07, rootMargin: '0px 0px -40px 0px' });
+  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>

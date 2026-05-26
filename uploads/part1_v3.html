@@ -1,0 +1,958 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chapter I: The Intercept | KALAHARI — THE UNTOLD FILE</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,300;1,400&family=JetBrains+Mono:wght@300;400&family=Bebas+Neue&display=swap" rel="stylesheet">
+  <style>
+    /* ═══════════════════════════════════════════════
+       KALAHARI DESIGN SYSTEM — CHAPTER TEMPLATE
+       ═══════════════════════════════════════════════ */
+    :root {
+      --bg: #0a0a0c;
+      --bg-elevated: #0e0e12;
+      --bg-card: #111116;
+      --bg-card-hover: #16161c;
+      --text: #c8c0b0;
+      --text-dim: #7a7468;
+      --text-muted: #4a4640;
+      --amber: #c4912a;
+      --amber-glow: rgba(196, 145, 42, 0.12);
+      --red: #7b2020;
+      --red-glow: rgba(123, 32, 32, 0.08);
+      --teal: #2a6e6e;
+      --cold: #3a4a6e;
+      --border: rgba(196, 145, 42, 0.10);
+      --border-strong: rgba(196, 145, 42, 0.22);
+    }
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Source Serif 4', Georgia, serif;
+      font-size: 1.125rem;
+      line-height: 1.85;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    /* Film grain overlay */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    /* ─── NAV ─── */
+    .nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      background: rgba(10, 10, 12, 0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 56px;
+    }
+
+    .nav-brand {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.3rem;
+      letter-spacing: 0.15em;
+      color: var(--text);
+      text-decoration: none;
+    }
+
+    .nav-brand .classified-stamp {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.5rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--red);
+      border: 1px solid var(--red);
+      padding: 2px 6px;
+      margin-left: 8px;
+      vertical-align: middle;
+    }
+
+    .nav-links {
+      display: flex;
+      list-style: none;
+      gap: 0.25rem;
+    }
+
+    .nav-links a {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      text-decoration: none;
+      padding: 0.4rem 0.75rem;
+      border-radius: 2px;
+      transition: color 0.3s, background 0.3s;
+    }
+
+    .nav-links a:hover,
+    .nav-links a.active {
+      color: var(--amber);
+      background: var(--amber-glow);
+    }
+
+    .nav-toggle {
+      display: none;
+      background: none;
+      border: 1px solid var(--border);
+      color: var(--text-dim);
+      font-size: 1.2rem;
+      padding: 0.3rem 0.6rem;
+      cursor: pointer;
+    }
+
+    @media (max-width: 860px) {
+      .nav-toggle { display: block; }
+      .nav-links {
+        display: none;
+        position: absolute;
+        top: 56px;
+        left: 0;
+        right: 0;
+        background: rgba(10, 10, 12, 0.97);
+        flex-direction: column;
+        padding: 1rem 2rem;
+        border-bottom: 1px solid var(--border);
+      }
+      .nav-links.open { display: flex; }
+    }
+
+    /* ─── HERO ─── */
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      align-items: flex-end;
+      padding: 8rem 2rem 5rem;
+      overflow: hidden;
+    }
+
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 100% 70% at 30% 30%, rgba(42, 60, 30, 0.08) 0%, transparent 50%),
+        radial-gradient(ellipse 80% 60% at 70% 70%, rgba(196, 145, 42, 0.06) 0%, transparent 50%),
+        var(--bg);
+    }
+
+    .hero-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom, transparent 30%, var(--bg) 95%);
+    }
+
+    .scanline-overlay {
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(
+        to bottom,
+        transparent,
+        transparent 2px,
+        rgba(0,0,0,0.03) 2px,
+        rgba(0,0,0,0.03) 4px
+      );
+      pointer-events: none;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      max-width: 750px;
+    }
+
+    .chapter-number {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: var(--amber);
+      margin-bottom: 1rem;
+    }
+
+    .chapter-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(3rem, 7vw, 5.5rem);
+      font-weight: 900;
+      line-height: 1.05;
+      color: #e8e2d4;
+      margin-bottom: 1.5rem;
+    }
+
+    .hero-subtitle {
+      font-size: 1.2rem;
+      color: var(--text-dim);
+      line-height: 1.7;
+      max-width: 560px;
+    }
+
+    /* ─── CONTENT LAYOUT ─── */
+    .chapter-body {
+      max-width: 740px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    /* ─── SECTION DIVIDER ─── */
+    .section-divider {
+      text-align: center;
+      padding: 3.5rem 0 2.5rem;
+    }
+
+    .section-divider .divider-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 0.4em;
+      text-transform: uppercase;
+      color: var(--amber);
+      opacity: 0.6;
+    }
+
+    .section-divider h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.6rem, 3.5vw, 2.2rem);
+      font-weight: 700;
+      color: #ddd6c6;
+      margin-top: 0.4rem;
+      line-height: 1.25;
+    }
+
+    .section-divider .divider-time {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      margin-top: 0.3rem;
+      letter-spacing: 0.1em;
+    }
+
+    .dots {
+      text-align: center;
+      padding: 2.5rem 0;
+      color: var(--text-muted);
+      letter-spacing: 0.8em;
+      font-size: 0.9rem;
+    }
+
+    /* ─── PROSE ─── */
+    .prose {
+      margin-bottom: 0;
+    }
+
+    .prose p {
+      margin-bottom: 1.6rem;
+      text-align: justify;
+      hyphens: auto;
+    }
+
+    .prose .first-para::first-letter {
+      font-family: 'Playfair Display', serif;
+      font-size: 3.8em;
+      float: left;
+      line-height: 0.78;
+      margin: 0.05em 0.12em 0 0;
+      color: var(--amber);
+      font-weight: 900;
+    }
+
+    /* ─── PULLQUOTE ─── */
+    .pullquote {
+      border-left: 3px solid var(--amber);
+      padding: 1.5rem 0 1.5rem 2rem;
+      margin: 2.5rem 0;
+    }
+
+    .pullquote p {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.35rem;
+      font-style: italic;
+      line-height: 1.55;
+      color: #c8c0b0;
+      text-align: left !important;
+    }
+
+    .pullquote cite {
+      display: block;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.65rem;
+      font-style: normal;
+      letter-spacing: 0.15em;
+      color: var(--text-muted);
+      margin-top: 0.75rem;
+    }
+
+    /* ─── IMAGE / VIDEO BLOCKS ─── */
+    .media-block {
+      margin: 3rem -2rem 3rem;
+      position: relative;
+    }
+
+    .media-block.wide {
+      margin-left: -5rem;
+      margin-right: -5rem;
+    }
+
+    @media (max-width: 900px) {
+      .media-block.wide {
+        margin-left: -2rem;
+        margin-right: -2rem;
+      }
+    }
+
+    .media-frame {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .media-frame::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(135deg, rgba(196,145,42,0.02) 0%, transparent 50%),
+        linear-gradient(225deg, rgba(42,110,110,0.02) 0%, transparent 50%);
+    }
+
+    .media-frame img,
+    .media-frame video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .media-frame .placeholder {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .media-frame .placeholder svg {
+      width: 40px;
+      height: 40px;
+      opacity: 0.2;
+    }
+
+    .media-frame .placeholder span {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+    }
+
+    .media-type-badge {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.55rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      padding: 3px 8px;
+      border-radius: 2px;
+      z-index: 3;
+    }
+
+    .media-type-badge.image {
+      background: rgba(196, 145, 42, 0.15);
+      color: var(--amber);
+      border: 1px solid rgba(196, 145, 42, 0.25);
+    }
+
+    .media-type-badge.video {
+      background: rgba(42, 110, 110, 0.15);
+      color: var(--teal);
+      border: 1px solid rgba(42, 110, 110, 0.25);
+    }
+
+    .media-caption {
+      padding: 0.75rem 2rem 0;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      line-height: 1.55;
+      font-style: italic;
+    }
+
+    /* ─── PROMPT BOX (collapsible) ─── */
+    .prompt-box {
+      margin: 1.5rem 0 2.5rem;
+      border: 1px solid rgba(42, 110, 110, 0.12);
+      background: rgba(42, 110, 110, 0.04);
+    }
+
+    .prompt-toggle {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.75rem 1.25rem;
+      cursor: pointer;
+      user-select: none;
+      transition: background 0.2s;
+    }
+
+    .prompt-toggle:hover {
+      background: rgba(42, 110, 110, 0.06);
+    }
+
+    .prompt-toggle .prompt-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--teal);
+    }
+
+    .prompt-toggle .prompt-arrow {
+      font-size: 0.7rem;
+      color: var(--teal);
+      transition: transform 0.3s;
+    }
+
+    .prompt-content {
+      display: none;
+      padding: 0 1.25rem 1.25rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.78rem;
+      line-height: 1.75;
+      color: var(--text-dim);
+    }
+
+    .prompt-box.open .prompt-content { display: block; }
+    .prompt-box.open .prompt-arrow { transform: rotate(180deg); }
+
+    .prompt-content .tool-tags {
+      margin-top: 0.75rem;
+      display: flex;
+      gap: 0.4rem;
+      flex-wrap: wrap;
+    }
+
+    .tool-tag {
+      font-size: 0.55rem;
+      letter-spacing: 0.15em;
+      padding: 2px 8px;
+      border-radius: 2px;
+      border: 1px solid var(--border);
+      color: var(--text-dim);
+      text-transform: uppercase;
+    }
+
+    /* ─── EVIDENCE / CLASSIFIED CARD ─── */
+    .evidence-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-strong);
+      padding: 2rem 2rem;
+      margin: 2.5rem 0;
+      position: relative;
+    }
+
+    .evidence-card::before {
+      content: attr(data-label);
+      position: absolute;
+      top: -0.6em;
+      left: 2rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.55rem;
+      letter-spacing: 0.3em;
+      color: var(--red);
+      background: var(--bg);
+      padding: 0 0.75em;
+      text-transform: uppercase;
+    }
+
+    .evidence-card h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.1rem;
+      color: var(--amber);
+      margin-bottom: 0.75rem;
+    }
+
+    .evidence-card p {
+      font-size: 0.95rem;
+      line-height: 1.7;
+      color: var(--text-dim);
+    }
+
+    /* ─── CHAPTER NAV ─── */
+    .chapter-nav {
+      max-width: 740px;
+      margin: 4rem auto 0;
+      padding: 2rem;
+      display: flex;
+      justify-content: space-between;
+      border-top: 1px solid var(--border);
+    }
+
+    .chapter-nav a {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      color: var(--text-dim);
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+
+    .chapter-nav a:hover { color: var(--amber); }
+
+    /* ─── FOOTER ─── */
+    .footer {
+      text-align: center;
+      padding: 3rem 2rem;
+      border-top: 1px solid var(--border);
+      margin-top: 2rem;
+    }
+
+    .footer-brand {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1rem;
+      letter-spacing: 0.2em;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+    }
+
+    .footer p {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+      opacity: 0.6;
+    }
+
+    /* ─── ANIMATIONS ─── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .fade-in {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+
+    .fade-in.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ═══════════ NAV ═══════════ -->
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-brand">Kalahari <span class="classified-stamp">File Open</span></a>
+      <button class="nav-toggle" aria-label="Menu" onclick="document.querySelector('.nav-links').classList.toggle('open')">&#9776;</button>
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="part1.html" class="active">The Intercept</a></li>
+        <li><a href="chapter2.html">The Recovery</a></li>
+        <li><a href="chapter3.html">The Documents</a></li>
+        <li><a href="chapter4.html">Nuclear Shadow</a></li>
+        <li><a href="chapter5.html">Truth?</a></li>
+        <li><a href="tools.html">Create</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- ═══════════ HERO ═══════════ -->
+  <section class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-overlay"></div>
+    <div class="scanline-overlay"></div>
+    <div class="hero-content">
+      <div class="chapter-number" style="opacity:0; animation: fadeUp 0.8s ease 0.2s forwards;">Chapter I</div>
+      <h1 class="chapter-title" style="opacity:0; animation: fadeUp 0.8s ease 0.5s forwards;">The Intercept</h1>
+      <p class="hero-subtitle" style="opacity:0; animation: fadeUp 0.8s ease 0.8s forwards;">
+        At 1:45 PM on 7 May 1989, a naval radar operator detected something moving at nearly six thousand knots. Within minutes, two Mirage jets were airborne. Within hours, the desert had swallowed whatever came next.
+      </p>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════
+       SECTION 1 — THE WATCH
+       ═══════════════════════════════════════════════ -->
+  <article class="chapter-body">
+
+    <div class="section-divider fade-in">
+      <span class="divider-label">Part I</span>
+      <h2>The Watch</h2>
+      <span class="divider-time">South Atlantic Ocean — 13:45 SAST</span>
+    </div>
+
+    <div class="prose fade-in">
+      <p class="first-para">The SAS Tafelberg was not a warship. She was a replenishment vessel — a converted cargo ship that shuttled fuel, ammunition, and supplies between the South African Navy's operational fleet and the ports of Simonstown and Saldanha Bay. Her hull was painted the standard slate grey of naval auxiliaries, her superstructure crowned by cranes rather than gun turrets, her crew trained in logistics rather than combat. To the casual observer, she was unremarkable. To anyone who understood the intelligence architecture of apartheid-era South Africa, she was something else entirely.</p>
+
+      <p>Below the waterline, in compartments that appeared on no publicly available deck plan, the Tafelberg carried electronic surveillance equipment supplied through channels that connected Pretoria to Tel Aviv to nameless front companies in Western Europe. Her patrols along the west coast of southern Africa served a dual purpose: ostensibly, she was a fleet support vessel. In practice, she was a floating signals intelligence platform, her sensors sweeping the electromagnetic spectrum for Soviet submarine transmissions, Cuban military communications, and the occasional probe by maritime patrol aircraft testing the air defence identification zone.</p>
+
+      <p>On the afternoon of 7 May 1989, the Tafelberg was eleven days into a routine patrol. The sea state was calm. The weather was clear. The duty radar officer — a man whose name has never appeared in any published account of the events that followed — was monitoring his scope with the half-attentive professionalism of a career naval officer on a quiet afternoon watch. The circular sweep of the phosphor line painted the same empty picture it had painted for the previous ten days: ocean, coastline, the occasional civilian aircraft tracking along established airways, nothing of note.</p>
+
+      <p>Then the scope changed.</p>
+    </div>
+
+    <!-- ═══ IMAGE 1: The Tafelberg at sea ═══ -->
+    <figure class="media-block fade-in">
+      <div class="media-frame">
+        <span class="media-type-badge image">AI Image</span>
+        <div class="placeholder">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+          <span>Image Placeholder</span>
+        </div>
+        <!-- REPLACE with: <img src="tafelberg-sea.jpg" alt="SAS Tafelberg at sea"> -->
+      </div>
+      <figcaption class="media-caption">The SAS Tafelberg on patrol — a supply ship hiding one of the Navy's most sophisticated surveillance suites.</figcaption>
+    </figure>
+
+    <div class="prompt-box" onclick="this.classList.toggle('open')">
+      <div class="prompt-toggle">
+        <span class="prompt-label">🎨 AI Image Prompt</span>
+        <span class="prompt-arrow">▼</span>
+      </div>
+      <div class="prompt-content">
+        Hyperrealistic photograph, a South African Navy replenishment vessel (converted cargo ship, slate grey hull, cranes on deck, flat-topped superstructure) at sea in the South Atlantic. Calm ocean, deep blue water, clear sky with scattered high cirrus clouds. Late afternoon golden light hitting the vessel's port side. The ship is alone — no other vessels visible. Naval ensign flying from the stern. Wide-angle shot from a helicopter at 200 feet altitude, looking slightly down. 1980s military documentary photography, Kodachrome film stock, slight grain. The ship should look unglamorous, utilitarian, functional — a workhorse, not a warship.
+        <div class="tool-tags">
+          <span class="tool-tag">Nano Banana 2</span>
+          <span class="tool-tag">Leonardo AI</span>
+          <span class="tool-tag">Flux 2 Pro</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="prose fade-in">
+      <p>A contact appeared at the extreme edge of detection range, tracking north-westerly at a speed that the operator's initial calculation placed at approximately 5,746 nautical miles per hour. He checked the calibration. He ran the computation again. He had the junior operator at the adjacent station perform an independent calculation. The numbers held. They did not make sense, but they held.</p>
+
+      <p>To understand what that speed means, consider the fastest aircraft in any nation's known inventory in 1989. The American SR-71 Blackbird — the acknowledged speed record holder — operated at approximately Mach 3.3, or roughly 2,200 miles per hour. The Soviet MiG-25 Foxbat, the fastest interceptor ever built, could sustain Mach 2.83. Even the most optimistic theoretical projections for advanced aerospace platforms — the kind of projections that circulated in classified defence journals and were discussed in hushed tones at industry conferences — topped out at around Mach 5. What the Tafelberg's radar was tracking was moving at roughly Mach 7.5. Nothing in the sky, on any nation's drawing board, could do that.</p>
+
+      <p>The duty officer did what standing orders required. He contacted Naval Headquarters in Simonstown and reported the contact. The message was acknowledged within minutes — not merely by the Navy, but simultaneously by military ground radar installations that had independently acquired the same track. Whatever the Tafelberg had detected, it was being painted by multiple sensor platforms across different frequencies and different locations. The contact was not a ghost. It was not an artefact. It was not a malfunction. Multiple independent radar systems, operated by different crews in different locations, were all looking at the same thing.</p>
+    </div>
+
+    <!-- ═══ VIDEO 1: The Radar Room ═══ -->
+    <figure class="media-block fade-in">
+      <div class="media-frame">
+        <span class="media-type-badge video">AI Video</span>
+        <div class="placeholder">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          <span>Video Placeholder</span>
+        </div>
+        <!-- REPLACE with: <video src="radar-room.mp4" autoplay muted loop playsinline></video> -->
+      </div>
+      <figcaption class="media-caption">The CIC aboard a South African naval vessel. Green phosphor glow. A single blip. The moment everything changed.</figcaption>
+    </figure>
+
+    <div class="prompt-box" onclick="this.classList.toggle('open')">
+      <div class="prompt-toggle">
+        <span class="prompt-label">🎥 AI Video Prompt — "The Radar Room"</span>
+        <span class="prompt-arrow">▼</span>
+      </div>
+      <div class="prompt-content">
+        Interior of a 1980s naval combat information centre. Dim red combat lighting. Two operators in South African Navy khaki short-sleeve uniforms seated before circular green-phosphor radar screens. Camera slowly pushes in from behind the operators toward the screens. The radar sweep rotates — empty, empty, empty — then a single bright blip appears at the edge. The nearest operator leans forward sharply, places his finger near the screen. Banks of analogue dials, toggle switches, coiled handset cords visible. Cigarette smoke drifts through the red light. Muffled radio static and a low electronic hum. 8 seconds. Cinematic, tense. No music — only ambient sound. 35mm film quality, heavy grain.
+        <div class="tool-tags">
+          <span class="tool-tag">Kling 3.0</span>
+          <span class="tool-tag">Wan 2.7</span>
+          <span class="tool-tag">ElevenLabs SFX</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="prose fade-in">
+      <p>The object was heading directly toward the South African mainland — toward the most densely concentrated corridor of classified military-industrial infrastructure in the Southern Hemisphere. In its path lay the Overberg Test Range on the southern coast, where ballistic missiles were tested in cooperation with Israel. Beyond that lay the Houwteq facility near Grabouw, where the RSA-series space launch vehicles were assembled in a complex whose layout mirrored, almost exactly, the Palmachim launch site south of Tel Aviv. And further inland, Vastrap — the sealed nuclear test shafts in the Kalahari, surrounded by kilometres of restricted desert and watched by satellites belonging to at least three foreign intelligence services.</p>
+
+      <p>Whatever this object was, it was heading toward the one part of the African continent where the most powerful nations on Earth had the most to hide — and the most to lose.</p>
+    </div>
+
+    <div class="dots">· · ·</div>
+
+    <!-- ═══════════════════════════════════════════════
+         SECTION 2 — THE SCRAMBLE
+         ═══════════════════════════════════════════════ -->
+    <div class="section-divider fade-in">
+      <span class="divider-label">Part II</span>
+      <h2>The Scramble</h2>
+      <span class="divider-time">SAAF Air Base — 13:52 SAST</span>
+    </div>
+
+    <div class="prose fade-in">
+      <p class="first-para">At the South African Air Force operations centre, the duty controller received the naval report and made two telephone calls in rapid succession. The first went to the commander of the nearest fighter squadron. The second went to a number that connected to a facility whose existence would not be publicly acknowledged for another fifteen years — a facility concerned with experimental weapons systems that Armscor and its subsidiary Kentron had been developing under the deepest classification protocols in the South African military establishment.</p>
+
+      <p>The two Mirage III interceptors designated for quick-reaction alert were already armed and fuelled on the flight line. Their pilots — men who had been selected for this duty because of their experience, their nerve, and their willingness to operate under conditions of extreme secrecy — had been sitting in their cockpits for nearly two hours, helmets resting on their laps, canopies open to vent the Cape heat, waiting for an alert that training exercises told them would probably involve a Soviet maritime patrol aircraft probing the ADIZ. They did not get a Soviet aircraft.</p>
+
+      <p>The scramble order came through the headsets at 13:52. Both pilots had their canopies sealed and engines running within ninety seconds. The Mirage III — a French-designed delta-wing interceptor that the SAAF had been operating since the mid-1960s — was an aging platform by 1989 standards. But it remained a formidable machine: fast, agile, and adapted by South African engineers with modifications that the original Dassault designers had never envisioned. These particular aircraft carried something that no Mirage III had been designed to carry — something that the pilots themselves had been briefed on only in the vaguest terms.</p>
+    </div>
+
+    <!-- ═══ IMAGE 2: Mirage III on the flight line ═══ -->
+    <figure class="media-block wide fade-in">
+      <div class="media-frame">
+        <span class="media-type-badge image">AI Image</span>
+        <div class="placeholder">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+          <span>Image Placeholder</span>
+        </div>
+        <!-- REPLACE with: <img src="mirage-flightline.jpg" alt="SAAF Mirage III on the flight line"> -->
+      </div>
+      <figcaption class="media-caption">SAAF Mirage III interceptors on quick-reaction alert. Deep golden-orange buff and dark olive drab green camouflage — the unmistakable colours of South African air power.</figcaption>
+    </figure>
+
+    <div class="prompt-box" onclick="this.classList.toggle('open')">
+      <div class="prompt-toggle">
+        <span class="prompt-label">🎨 AI Image Prompt — Mirage Flight Line</span>
+        <span class="prompt-arrow">▼</span>
+      </div>
+      <div class="prompt-content">
+        Hyperrealistic photograph, two South African Air Force Mirage III fighter jets parked on a concrete flight line at an airbase. Aircraft painted in SAAF camouflage — deep golden-orange buff (BSC360) with very dark olive drab green (BSC298), HARD sharp-edged pattern (NOT soft blended edges). Delta wing configuration. Canopies open, pilots climbing in. Ground crew in SAAF blue overalls around the aircraft. Heat shimmer rising from the tarmac. Bright midday African sunlight, harsh shadows. Castle of Good Hope shield insignia on fuselage (NOT a circular roundel). A flat airbase with low prefab buildings and a control tower in the background. No hangars. 1980s military photojournalism. Telephoto lens compression. Slight heat haze. Kodachrome colour palette.
+        <div class="tool-tags">
+          <span class="tool-tag">Leonardo AI</span>
+          <span class="tool-tag">Stable Diffusion + LoRA</span>
+          <span class="tool-tag">Flux 2 Pro</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="prose fade-in">
+      <p>The Mirages launched in sequence — lead aircraft first, wingman four seconds later — afterburners painting twin trails of dirty orange exhaust across the afternoon sky. They climbed hard through the coastal haze, pushing past Mach 1 within the first sixty seconds, the familiar double crack of the sonic boom rolling across the Cape Flats below. Civilian air traffic control would later note the scramble in their logs. No explanation was given. None was requested. In 1989, South African military aviation did not explain itself to civilians.</p>
+
+      <p>The pilots vectored northwest, following the heading provided by the operations centre. The object had entered South African airspace at 13:52 — the same moment the scramble order was given, a coincidence of timing that suggests the operations centre had been tracking the contact for several minutes before committing aircraft. Radio contact was attempted on all standard military and civilian emergency frequencies. 121.5 MHz. 243.0 MHz. Guard frequency. Nothing. The object did not respond. It did not deviate from its course. It did not alter its speed. It continued northwest, heading deep into the interior of the country, toward the Kalahari, toward the desert, toward the emptiest and most classified stretch of terrain in southern Africa.</p>
+    </div>
+
+    <!-- ═══ VIDEO 2: The Scramble / Takeoff ═══ -->
+    <figure class="media-block fade-in">
+      <div class="media-frame">
+        <span class="media-type-badge video">AI Video</span>
+        <div class="placeholder">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          <span>Video Placeholder</span>
+        </div>
+        <!-- REPLACE with: <video src="mirage-scramble.mp4" autoplay muted loop playsinline></video> -->
+      </div>
+      <figcaption class="media-caption">Afterburner ignition. Two Mirages tear skyward from the flight line, trailing condensation against the deep African blue.</figcaption>
+    </figure>
+
+    <div class="prompt-box" onclick="this.classList.toggle('open')">
+      <div class="prompt-toggle">
+        <span class="prompt-label">🎥 AI Video Prompt — "The Scramble"</span>
+        <span class="prompt-arrow">▼</span>
+      </div>
+      <div class="prompt-content">
+        Two SAAF Mirage III jets accelerating down a runway and lifting off in rapid sequence. Camera positioned low at runway edge, looking down the centreline. First jet passes close — deafening roar, heat shimmer, exhaust blast. Second jet follows 4 seconds later. Both climb steeply against a clear blue African sky, afterburners fully lit with bright orange-white exhaust cones. Condensation vortices streaming from delta wingtips. Aircraft in SAAF deep golden-orange buff and dark olive green camouflage, hard sharp-edged pattern. Dust kicked up from the runway edges. 8-10 seconds. Cinematic action, handheld camera shake from jet blast. Industrial percussion score building underneath.
+        <div class="tool-tags">
+          <span class="tool-tag">Seedance 2.0</span>
+          <span class="tool-tag">Kling 3.0</span>
+          <span class="tool-tag">CapCut</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="prose fade-in">
+      <p>At this point in the narrative, the story crosses a threshold that separates the verifiable from the alleged, the documented from the claimed. Everything up to the scramble — the radar contact, the naval report, the existence of the Mirage III interceptors, the quick-reaction alert procedures, the classified weapons research — is grounded in institutional reality that can be confirmed through independent sources. What follows comes primarily from the leaked documents and from the intercepted conversation fragments that were later attributed to a classified debriefing at Wright-Patterson Air Force Base.</p>
+
+      <p>The Squadron Leader — the lead pilot, whose identity remains protected by layers of classification that have survived the transition from apartheid to democracy — reported over the encrypted tactical frequency that he had achieved visual contact with the target. What he described, in language that would later be parsed and re-parsed by dozens of researchers, was unlike anything in his experience. The object did not resemble any aircraft. It was not a missile. It did not behave according to the rules of aerodynamics as he understood them. It moved with a fluidity and purposefulness that he could not reconcile with any propulsion system he had ever encountered in twenty years of military aviation.</p>
+    </div>
+
+    <div class="pullquote fade-in">
+      <p>"It's a straight forward question, Squadron Leader. How many times did you fire at the darn thing?"</p>
+      <cite>— Attributed to General Brunel, Wright-Patterson AFB debriefing transcript</cite>
+    </div>
+
+    <div class="dots">· · ·</div>
+
+    <!-- ═══════════════════════════════════════════════
+         SECTION 3 — THOR 2
+         ═══════════════════════════════════════════════ -->
+    <div class="section-divider fade-in">
+      <span class="divider-label">Part III</span>
+      <h2>Thor 2</h2>
+      <span class="divider-time">Over the Northern Cape — 14:03 SAST</span>
+    </div>
+
+    <div class="prose fade-in">
+      <p class="first-para">The order came through the encrypted channel at 14:03. It was delivered in the flat, procedural tone that military communications adopt when the words being spoken are extraordinary and the speakers cannot afford to acknowledge that fact. The order was to arm and deploy Thor 2 — the experimental beam weapon that the Mirages had been carrying since the quick-reaction alert configuration was loaded earlier that day.</p>
+
+      <p>The weapon designated Thor 2 was not a laser. This distinction is critical, and it has been misreported in virtually every published account of the Kalahari incident for thirty-seven years. The original leaked documents themselves clarify this point explicitly: the device was a MASER — Microwave Amplification by Stimulated Emission of Radiation — a system that emits a concentrated, high-energy beam of microwave radiation rather than coherent light. The document states, in language that reads like an engineer correcting a journalist: <em>"the true meaning is a MASER weapon — a high-energy beam of microwave activity."</em></p>
+
+      <p>This distinction matters enormously — not because of the physics, but because of the plausibility. A laser powerful enough to disable an airborne target in 1989 would have required a power source the size of a small building. The idea that such a weapon could have been mounted on a Mirage III is, frankly, absurd, and every serious researcher who has examined the documents has noted this as a credibility problem. But a high-power microwave system is a fundamentally different proposition.</p>
+    </div>
+
+    <div class="evidence-card fade-in" data-label="Verified Intelligence">
+      <h3>The MASER vs. Laser Distinction</h3>
+      <p>High-power microwave (HPM) weapons disrupt electronics, overload circuits, and induce system-wide avionics failure — precisely the effects described in the documents. Unlike lasers, HPM systems do not require enormous optical focusing arrays or chemical fuel cells. South Africa's Armscor/Kentron was actively developing electronic warfare capabilities throughout the 1980s, including work with Israel Aerospace Industries on the Harpy anti-radiation drone (first tested in 1989), whose underlying technology relied on electromagnetic warfare principles consistent with MASER-type systems. The technology was real. The capability was within reach. The description in the documents is not fantasy — it is technically coherent.</p>
+    </div>
+
+    <div class="prose fade-in">
+      <p>There is a broader context that makes the MASER framing even more compelling. In July 1989 — two months after the alleged Kalahari incident — the United States conducted the BEAR project (Beam Experiment Aboard Rocket), a test of a neutral particle beam weapon launched from White Sands Missile Range. The BEAR test demonstrated that directed-energy weapons had moved from theoretical research into active, flight-tested hardware. South Africa, through its covert relationships with both American and Israeli defence establishments, would have had access to at least the conceptual frameworks underlying this technology, even if the specific engineering remained proprietary.</p>
+
+      <p>Furthermore, recent accounts from UAP encounters — including those reported by U.S. Navy pilots in the Nimitz (2004) and Roosevelt (2014-2015) carrier groups — consistently describe the same constellation of effects that a MASER-type weapon would produce: electronics disruption, erratic flight behaviour, system-wide failure rather than localised thermal damage. If you were designing a weapon to disable such an object, you would not use a laser. You would use precisely what the documents describe.</p>
+
+      <p>The Squadron Leader reported that after the weapon was discharged, the object emitted several blinding flashes. It began to waver — a word that appears repeatedly in the original documents and in the debriefing fragments. Its speed decreased dramatically, from thousands of miles per hour to a fraction of its former velocity. It began losing altitude at approximately 3,000 feet per minute. The object crossed from Botswanan airspace into South African territory and struck the desert floor at a shallow angle of approximately 25 degrees, impacting in one of the most remote stretches of the Kalahari — a region where the nearest civilian settlement was hours away by road, where there were no witnesses, no cameras, no journalists, no one at all except the sand and the scrub and the indifferent sky.</p>
+    </div>
+
+    <!-- ═══ IMAGE 3: Cockpit POV / weapon discharge ═══ -->
+    <figure class="media-block fade-in">
+      <div class="media-frame">
+        <span class="media-type-badge image">AI Image</span>
+        <div class="placeholder">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+          <span>Image Placeholder</span>
+        </div>
+        <!-- REPLACE with: <img src="cockpit-pov.jpg" alt="Mirage III cockpit POV during intercept"> -->
+      </div>
+      <figcaption class="media-caption">Cockpit perspective: the pilot's gloved hand on the weapons release. Ahead, through the HUD, something that shouldn't exist.</figcaption>
+    </figure>
+
+    <div class="prompt-box" onclick="this.classList.toggle('open')">
+      <div class="prompt-toggle">
+        <span class="prompt-label">🎨 AI Image Prompt — Cockpit POV</span>
+        <span class="prompt-arrow">▼</span>
+      </div>
+      <div class="prompt-content">
+        Hyperrealistic first-person cockpit view from inside a Mirage III fighter jet at high altitude. Pilot's gloved right hand (olive drab Nomex flight glove) resting on the control stick with thumb near a weapons release button. The HUD (heads-up display) shows targeting crosshairs and altitude/speed numbers projected on the canopy glass. Through the canopy, a deep blue sky at 35,000+ feet with the curve of the Earth barely visible. In the distance — small, bright, and ambiguous — a metallic point of light that could be an object or could be a reflection. Deliberately unclear. The canopy frame and instrument panel visible in the foreground (1980s era analogue gauges, not glass cockpit). Harsh sunlight from above. Atmosphere: tense, isolated, lonely. Shot with a GoPro-style wide-angle lens mounted on the pilot's helmet. Slight lens distortion. Film grain.
+        <div class="tool-tags">
+          <span class="tool-tag">Midjourney</span>
+          <span class="tool-tag">Leonardo AI</span>
+          <span class="tool-tag">Ideogram 3.0</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="prose fade-in">
+      <p>The timing and location of the impact would become, for investigators who studied the case in the years that followed, either the most damning evidence against the story's authenticity or the most compelling evidence in its favour. The crash occurred during a documented 60-day RSA-1/RSA-3 weapons testing corridor — a period during which the Vastrap range and surrounding restricted zones were active, military traffic was elevated, and the kind of classified activity that generates radar signatures, electromagnetic anomalies, and physical evidence in the desert was at its peak.</p>
+
+      <p>For the sceptic, this is too convenient. A UFO crash during a weapons testing window, in the most restricted military zone in southern Africa, detected only by military radar, witnessed only by military personnel? It reads like a cover story — and perhaps that is exactly what it was. Not a cover story for aliens, but a cover story for something else: a weapons test gone wrong, a prototype that failed, an accident that left evidence in the sand that needed to be explained away before foreign satellites could photograph it.</p>
+
+      <p>For the believer, the testing window is precisely why an anomalous object might have been in the area. Nuclear sites attract UFO activity — this is not merely folklore but a pattern documented across decades, from Malmstrom Air Force Base in Montana (1967) to RAF Bentwaters in Suffolk (1980) to the Vela Incident in the South Atlantic (1979). If whatever is behind the UAP phenomenon is drawn to nuclear weapons activity, then Vastrap during an active testing window would have been irresistible.</p>
+
+      <p>For the intelligence analyst, the question is different. Not <em>what</em> happened, but <em>who benefits</em> from each version of the story. And the answer to that question leads somewhere considerably more unsettling than either alien spacecraft or weapons malfunctions.</p>
+    </div>
+
+    <!-- ═══ VIDEO 3: The Descent / Impact ═══ -->
+    <figure class="media-block wide fade-in">
+      <div class="media-frame">
+        <span class="media-type-badge video">AI Video</span>
+        <div class="placeholder">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          <span>Video Placeholder</span>
+        </div>
+        <!-- REPLACE with: <video src="disc-descending.mp4" autoplay muted loop playsinline></video> -->
+      </div>
+      <figcaption class="media-caption">The descent. An object trailing electromagnetic shimmer drops toward the Kalahari at a 25-degree angle. The sand erupts on impact.</figcaption>
+    </figure>
+
+    <div class="prompt-box" onclick="this.classList.toggle('open')">
+      <div class="prompt-toggle">
+        <span class="prompt-label">🎥 AI Video Prompt — "The Descent"</span>
+        <span class="prompt-arrow">▼</span>
+      </div>
+      <div class="prompt-content">
+        Wide shot of empty Kalahari Desert — flat red sand, scattered scrub, cloudless sky. Camera is static, tripod-level, watching the horizon. After 2 seconds, a metallic disc-shaped object appears from the upper right of frame, descending at approximately 25 degrees. It is NOT on fire — instead it trails a shimmer/distortion effect (like heat haze but more intense — electromagnetic interference visualised). The object moves at moderate speed, growing larger as it approaches. At 6 seconds it impacts the desert floor at distance, throwing up an enormous plume of red sand and dust. A ground-level shockwave ripples outward, flattening nearby scrub. The dust cloud rises and spreads. Camera holds steady throughout — documentary/news footage style. No music. Only the sound of distant impact: a deep, reverberating THUD followed by the rushing hiss of displaced sand. 10 seconds total. Photorealistic. Full bright midday sunlight.
+        <div class="tool-tags">
+          <span class="tool-tag">Veo 3.1</span>
+          <span class="tool-tag">Wan 2.7</span>
+          <span class="tool-tag">ElevenLabs SFX</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="prose fade-in">
+      <p>The dust settled. The desert, which had been briefly disturbed, began its ancient work of reclamation. And somewhere in the command structure of the South African Defence Force, a decision was made — quickly, quietly, and with the absolute authority that only a state accustomed to operating beyond oversight can exercise. A recovery team was assembled. Helicopters were dispatched. The site was to be secured, the evidence collected, the story controlled.</p>
+
+      <p>What that team found when they reached the crater — what stepped out of the object when the door was finally forced open — would become the most contested, most debated, and most stubbornly unresolvable element of the entire Kalahari file. But that is the next chapter.</p>
+
+      <p>For now, the desert was quiet again. The Mirages had turned for home. The Tafelberg's radar scope showed nothing but empty ocean. And in the Kalahari, in a crater that was already beginning to fill with windblown sand, something sat — silent, still, and waiting to be found.</p>
+    </div>
+
+    <!-- ═══ IMAGE 4: Final atmospheric — the crater at distance ═══ -->
+    <figure class="media-block wide fade-in">
+      <div class="media-frame">
+        <span class="media-type-badge image">AI Image</span>
+        <div class="placeholder">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+          <span>Image Placeholder</span>
+        </div>
+        <!-- REPLACE with: <img src="crater-distance.jpg" alt="Distant impact crater in the Kalahari"> -->
+      </div>
+      <figcaption class="media-caption">The Kalahari after impact. A dust plume still hangs over the crater site. The desert is already beginning to reclaim what fell from the sky.</figcaption>
+    </figure>
+
+    <div class="prompt-box" onclick="this.classList.toggle('open')">
+      <div class="prompt-toggle">
+        <span class="prompt-label">🎨 AI Image Prompt — The Crater at Distance</span>
+        <span class="prompt-arrow">▼</span>
+      </div>
+      <div class="prompt-content">
+        Hyperrealistic wide landscape photograph, Kalahari Desert. Vast flat red sand terrain under a clear sky. In the middle distance (approximately 500 metres away) a visible disturbance: a fresh impact crater with a lingering column of reddish-brown dust slowly dispersing in a light breeze. The crater itself is partially obscured by the settling dust — you can see the dark shadow of the depression and a glint of something metallic catching the sunlight, but details are deliberately ambiguous. In the foreground, undisturbed desert: red sand, dry scrub, scattered camel thorn trees. Full bright midday African sunlight. No people, no vehicles yet — this is the moment BEFORE the recovery team arrives. The emptiness is the subject. Shot with a telephoto lens (200mm equivalent) from ground level, compressing the distance. Documentary photography, 1980s Kodachrome film stock, slightly warm colour cast, visible grain. The image should feel ominous despite the bright sunshine — something is wrong in this landscape.
+        <div class="tool-tags">
+          <span class="tool-tag">Nano Banana 2</span>
+          <span class="tool-tag">Midjourney</span>
+          <span class="tool-tag">Veo 3.1 (still frame)</span>
+        </div>
+      </div>
+    </div>
+
+  </article>
+
+  <!-- ═══════════ CHAPTER NAV ═══════════ -->
+  <div class="chapter-nav">
+    <a href="index.html">&#8592; Home</a>
+    <a href="chapter2.html">Chapter II: The Recovery &#8594;</a>
+  </div>
+
+  <!-- ═══════════ FOOTER ═══════════ -->
+  <footer class="footer">
+    <div class="footer-brand">KALAHARI — THE UNTOLD FILE</div>
+    <p>An investigative multimedia project by Henri Le Riche.</p>
+  </footer>
+
+  <!-- ═══════════ JS ═══════════ -->
+  <script>
+    // Scroll-triggered animations
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+
+    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+    // Nav scroll effect
+    window.addEventListener('scroll', () => {
+      document.querySelector('.nav').style.borderBottomColor =
+        window.scrollY > 100 ? 'rgba(196, 145, 42, 0.15)' : 'rgba(196, 145, 42, 0.08)';
+    });
+  </script>
+</body>
+</html>
